@@ -146,4 +146,4 @@ def register_pet(queue):
     queue.append(form_data)
     return form_data
 
-register_pet()
+register_pet(consultation_queue)
