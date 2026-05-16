@@ -146,7 +146,4 @@ def register_pet(queue):
     queue.append(form_data)
     return form_data
 
-while True:
-    register_pet()
-    print(consultation_queue)
-        
+register_pet()
