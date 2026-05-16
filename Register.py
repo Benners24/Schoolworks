@@ -1,8 +1,6 @@
 # Queue
 consultation_queue = []
-
 # ----------
-
 def pet_id_generator(queue):
     if queue == []:
         return 'PID001'
@@ -12,9 +10,7 @@ def pet_id_generator(queue):
         pid_prefix = last_pid[:3]
         pid_number = int(last_pid[3:]) + 1
         return f"{pid_prefix}{pid_number:03d}"
-    
 # ----------
-
 def get_valid_input(prompt):
     while True:
         user_prompt = input(prompt)
@@ -24,9 +20,7 @@ def get_valid_input(prompt):
         else:
             field_name = prompt.strip().rstrip(":").strip().lower()
             print(f"Invalid input. '{user_prompt}' is not a valid {field_name}.")
-
 # ----------
-
 def get_severity_level():
     severity_map = {
         1: "Most Severe / Emergency",
@@ -45,9 +39,7 @@ def get_severity_level():
                 print(f"Invalid input. Severity level {user_prompt} is not valid.")
         except ValueError:
             print("Invalid input. Please enter a number between 1 and 5.")
-
 # ----------
-
 def register_pet(queue):
     form_data = {
         pet_id_generator(queue): {
@@ -60,7 +52,7 @@ def register_pet(queue):
 
     queue.append(form_data)
     return form_data
-
+# ----------
 # Trial
 register_pet(consultation_queue)
 print(consultation_queue)
