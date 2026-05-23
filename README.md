@@ -213,6 +213,14 @@ This project demonstrates:
 
 ---
 
-# Author
+# Authors
+
+Developed by:
+
+- Adalim, Isaiah
+- Legaspi, John Benedict
+- Marcelo, Chloe
+- Mercado, Brian
+- Mirador, Josh Matthew
 
 Developed as a Python Data Structures and Algorithms project.
