@@ -1,0 +1,299 @@
+# ====================
+# NODE CLASS
+# ====================
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.next = None
+# ====================
+
+# ====================
+# PET CLASS
+# ====================
+class Pet:
+    def __init__(self, pet_id, pet_name, breed, owner_name, severity):
+        self.pet_id = pet_id
+        self.pet_name = pet_name
+        self.breed = breed
+        self.owner_name = owner_name
+        self.severity = severity
+# ====================
+
+# ====================
+# LINKED LIST CLASS
+# ====================
+class ConsultationQueue:
+    def __init__(self):
+        self.head = None
+        self.tail = None
+        self.registry = []
+# --------------------
+    def is_empty(self):
+        return self.head is None
+# --------------------
+    def enqueue(self, data):
+        new_pet = Node(data)
+
+        self.registry.append(data)
+
+        if new_pet.data.severity == 1:
+            print(f"\nWARNING: Pet {new_pet.data.pet_id} is in critical condition!")
+            print(f"Severity: {new_pet.data.severity} — placing at highest priority.")
+
+        new_id = int(new_pet.data.pet_id[-3:])
+
+        if self.is_empty():
+            self.head = new_pet
+            self.tail = new_pet
+            return
+
+        head_id = int(self.head.data.pet_id[-3:])
+
+        if (
+            new_pet.data.severity < self.head.data.severity 
+            or
+            (
+                new_pet.data.severity == self.head.data.severity
+                and new_id < head_id
+            )
+        ):
+
+            new_pet.next = self.head
+            self.head = new_pet
+            return
+
+        current = self.head
+
+        while current.next is not None:
+
+            next_pet = current.next.data
+            next_id = int(next_pet.pet_id[-3:])
+
+            if (
+                new_pet.data.severity < next_pet.severity
+                or
+                (
+                    new_pet.data.severity == next_pet.severity
+                    and new_id < next_id
+                )
+            ):
+                break
+
+            current = current.next
+
+        new_pet.next = current.next
+        current.next = new_pet
+
+        if new_pet.next is None:
+            self.tail = new_pet
+# --------------------
+    def dequeue(self):
+        if self.is_empty():
+            print("Queue is empty. No pets to serve.")
+            return None
+        
+        removed = self.head.data
+        self.head = self.head.next
+
+        if self.head is None:
+            self.tail = None
+
+        print('Now Serving:')
+        print('Pet ID         :', removed.pet_id)
+        print('Pet Name       :', removed.pet_name)
+        print('Breed          :', removed.breed)
+        print('Owner Name     :', removed.owner_name)
+        print('Severity Level :', removed.severity)
+
+        return removed
+# ====================
+
+# ====================
+# HELPER FUNCTIONS
+# ====================
+def pet_id_generator():
+    if not queue.registry:
+        return 'PID001'
+
+    last_info = queue.registry[-1].pet_id
+
+    pid_prefix = last_info[:3]
+    pid_number = int(last_info[3:]) + 1
+
+    return f"{pid_prefix}{pid_number:03d}"
+# --------------------
+def get_valid_input(prompt):
+    while True:
+        user_prompt = input(prompt)
+
+        if user_prompt.strip() and all(x.isalpha() or x.isspace() for x in user_prompt):
+            return user_prompt.title()
+        else:
+            field_name = prompt.strip().rstrip(":").strip().lower()
+            print(f"Invalid input. '{user_prompt}' is not a valid {field_name}.")
+# --------------------
+def get_severity_level():
+    while True:
+        try:
+            user_prompt = int(input("Condition Severity (1-5): "))
+
+            if 1 <= user_prompt <= 5:
+                return user_prompt
+            else:
+                print(f"Invalid input. Severity level {user_prompt} is not valid.")
+
+        except ValueError:
+            print("Invalid input. Please enter a number between 1 and 5.")
+# ====================
+
+# ====================
+# CORE FUNCTIONS
+# ====================
+queue = ConsultationQueue()
+def register_pet():
+    pet = Pet(
+        pet_id_generator(), 
+        get_valid_input("Pet Name: "), 
+        get_valid_input("Breed: "), 
+        get_valid_input("Owner Name: "),
+        get_severity_level()
+    )
+
+    queue.enqueue(pet)
+# --------------------
+def undo_register():
+    if not queue.registry:
+        print("No registrations to undo.")
+        return
+
+    removed_pet = queue.registry.pop()
+
+    current = queue.head
+    previous = None
+
+    while current is not None:
+
+        if current.data.pet_id == removed_pet.pet_id:
+
+            if previous is None:
+                queue.head = current.next
+            else:
+                previous.next = current.next
+
+            if current == queue.tail:
+                queue.tail = previous
+
+            print(f"Last registration undone: {removed_pet.pet_id}")
+            return
+
+        previous = current
+        current = current.next
+# --------------------
+def display_registry():
+    if not queue.registry:
+        print("No registered pets.")
+        return
+
+    print("\nRegistered Pets:")
+    print("-" * 40)
+
+    for pet in queue.registry:
+        print(f"Pet ID         : {pet.pet_id}")
+        print(f"Pet Name       : {pet.pet_name}")
+        print(f"Breed          : {pet.breed}")
+        print(f"Owner Name     : {pet.owner_name}")
+        print(f"Severity Level : {pet.severity}")
+        print("-" * 40)
+# --------------------
+def display_queue():
+    print("\n" + "=" * 50)
+    print("       VETERINARY CLINIC MANAGEMENT SYSTEM")
+    print("=" * 50)
+
+    if queue.is_empty():
+        print("No pets in queue.")
+        print("=" * 50)
+        return
+
+    # CURRENT PET
+    current_pet = queue.head.data
+
+    print("\nCURRENT PET TO BE SERVED:")
+    print("-" * 40)
+    print(f"Pet ID         : {current_pet.pet_id}")
+    print(f"Pet Name       : {current_pet.pet_name}")
+    print(f"Breed          : {current_pet.breed}")
+    print(f"Owner Name     : {current_pet.owner_name}")
+    print(f"Severity Level : {current_pet.severity}")
+
+    # WAITING LINE
+    if queue.head.next is not None:
+
+        print("\nWAITING LINE:")
+        print("-" * 50)
+
+        current = queue.head.next
+
+        position = 1
+
+        while current is not None:
+            pet = current.data
+
+            print(f"{position}. {pet.pet_id} | "
+                  f"{pet.pet_name} | "
+                  f"{pet.breed} | "
+                  f"Owner: {pet.owner_name} | "
+                  f"Severity: {pet.severity}")
+
+            current = current.next
+            position += 1
+
+    else:
+        print("\nNo pets waiting in line.")
+
+    print("=" * 50)
+# ====================
+
+# ====================
+# MENU
+# ====================
+def menu():
+    while True:
+
+        display_queue()
+
+        print("\nMENU")
+        print("[1] Register Pet")
+        print("[2] Serve Next Pet")
+        print("[3] Undo Last Registration")
+        print("[4] Display Registered Pets")
+        print("[5] Exit")
+
+        choice = input("\nEnter choice: ")
+
+        if choice == "1":
+            register_pet()
+
+        elif choice == "2":
+            queue.dequeue()
+
+        elif choice == "3":
+            undo_register()
+
+        elif choice == "4":
+            display_registry()
+
+        elif choice == "5":
+            print("Exiting program...")
+            break
+
+        else:
+            print("Invalid choice. Please try again.")
+# ====================
+
+# ====================
+# RUN PROGRAM
+# ====================
+menu()
+# ====================
+
