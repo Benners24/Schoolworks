@@ -215,7 +215,6 @@ def display_queue():
         print("=" * 50)
         return
 
-    # CURRENT PET
     current_pet = queue.head.data
 
     print("\nCURRENT PET TO BE SERVED:")
@@ -226,7 +225,6 @@ def display_queue():
     print(f"Owner Name     : {current_pet.owner_name}")
     print(f"Severity Level : {current_pet.severity}")
 
-    # WAITING LINE
     if queue.head.next is not None:
 
         print("\nWAITING LINE:")
